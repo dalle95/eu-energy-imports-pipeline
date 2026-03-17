@@ -14,7 +14,6 @@ def main():
 
     print("Processing phase started")
 
-
     run_processing()
 
     print("Processing phase completed")
