@@ -51,6 +51,7 @@ services:
       - "4040:4040"
     volumes:
       - ./data:/data
+      - ./processing:/processing
       - ./processing/spark/notebook:/home/spark/work/notebooks
       - ./processing/spark:/processing/spark
     working_dir: /home/spark/work/notebooks
