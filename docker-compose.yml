@@ -1,0 +1,87 @@
+services:
+  spark-master:
+    image: apache/spark:4.1.1-python3
+    container_name: spark-master
+    hostname: spark-master
+    command: >
+      /bin/bash -c "
+      /opt/spark/sbin/start-master.sh &&
+      tail -f /opt/spark/logs/*"
+    environment:
+      SPARK_NO_DAEMONIZE: "true"
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    volumes:
+      - ./data:/data
+      - ./processing/spark:/processing/spark
+    networks:
+      - spark-network
+
+  spark-worker:
+    image: apache/spark:4.1.1-python3
+    container_name: spark-worker
+    hostname: spark-worker
+    depends_on:
+      - spark-master
+    command: >
+      /bin/bash -c "
+      /opt/spark/sbin/start-worker.sh spark://spark-master:7077 &&
+      tail -f /opt/spark/logs/*"
+    environment:
+      SPARK_NO_DAEMONIZE: "true"
+      SPARK_WORKER_CORES: "2"
+      SPARK_WORKER_MEMORY: "2g"
+    volumes:
+      - ./data:/data
+      - ./processing/spark:/processing/spark
+    networks:
+      - spark-network
+
+  spark-client:
+    build:
+      context: .
+      dockerfile: processing/spark/Dockerfile.spark-client
+    container_name: spark-client
+    hostname: spark-client
+    depends_on:
+      - spark-master
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./data:/data
+      - ./processing/spark/notebook:/home/spark/work/notebooks
+      - ./processing/spark:/processing/spark
+    working_dir: /home/spark/work/notebooks
+    networks:
+      - spark-network
+
+  pgdatabase:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "ue_energy"
+    volumes:
+      - "ue_energy_postgres_data:/var/lib/postgresql"
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    volumes:
+      - "pgadmin_data:/var/lib/pgadmin"
+    ports:
+      - "8085:80"
+
+networks:
+  spark-network:
+    driver: bridge
+
+volumes:
+  ue_energy_postgres_data:
+  pgadmin_data:

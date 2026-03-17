@@ -1,48 +1,20 @@
-from ingestion.eurostat.config.download_dimensions import download_dimensions as download_dimensions
-
-from ingestion.eurostat.extract.download_oil_data import download_oil_data as download_oil_data_eurostat
-from ingestion.eurostat.extract.download_gas_data import download_gas_data as download_gas_data_eurostat
-from ingestion.eurostat.extract.download_electricity_data import download_electricity_data as download_electricity_data_eurostat
-
-from ingestion.comext.extract.download_oil_data import download_oil_data as download_oil_data_comext
-from ingestion.comext.extract.download_gas_data import download_gas_data as download_gas_data_comext
-
+from ingestion.run_ingestion import run_ingestion as run_ingestion
 
 def main():
 
-    print("Starting Eurostat dimensions ingestion")
+    print("Pipeline started")
 
-    download_dimensions()
+    print("Ingestion phase started")
 
-    print("Pipeline completed")
+    run_ingestion()
 
-    print("Starting Eurostat oil ingestion")
+    print("Ingestion phase completed")
 
-    download_oil_data_eurostat()
+    print("Processing phase started")
 
-    print("Pipeline completed")
+    print("Processing phase completed")
 
-    print("Starting Eurostat gas ingestion")
 
-    download_gas_data_eurostat()
-
-    print("Pipeline completed")
-
-    print("Starting Eurostat electricity ingestion")
-
-    download_electricity_data_eurostat()
-
-    print("Pipeline completed")   
-
-    print("Starting Comext oil ingestion")
-
-    download_oil_data_comext()
-
-    print("Pipeline completed")
-
-    print("Starting Comext gas ingestion")
-
-    download_gas_data_comext()
 
     print("Pipeline completed")
 
