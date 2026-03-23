@@ -35,11 +35,11 @@ def process_comext_data(input_path, output_base_path, app_name):
 		.schema(schema) \
 		.csv(input_path)
 
-	df_oil_quantity = df_oil.select('reporter', 'partner', 'TIME_PERIOD', 'OBS_VALUE').filter(df_oil.indicators == 'QUANTITY_IN_100KG')
+	df_oil_quantity = df_oil.select('reporter', 'partner', 'product', 'TIME_PERIOD', 'OBS_VALUE').filter(df_oil.indicators == 'QUANTITY_IN_100KG')
 
 	df_oil_quantity.write.parquet(output_base_path + '/quantity', mode = 'overwrite')
 
-	df_oil_value = df_oil.select('reporter', 'partner', 'TIME_PERIOD', 'OBS_VALUE').filter(df_oil.indicators == 'VALUE_IN_EUROS')
+	df_oil_value = df_oil.select('reporter', 'partner', 'product', 'TIME_PERIOD', 'OBS_VALUE').filter(df_oil.indicators == 'VALUE_IN_EUROS')
 
 	df_oil_value.write.parquet(output_base_path + '/value', mode = 'overwrite')
 
