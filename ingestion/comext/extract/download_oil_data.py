@@ -51,7 +51,7 @@ def download_oil_data():
     indicators = filters["indicators"]
     indicators_str = "+".join(indicators)
 
-    year = datetime.datetime.now().year
+    current_year = datetime.datetime.now().year
 
     endpoint = "https://ec.europa.eu/eurostat/api/comext/dissemination/sdmx/2.1"
     base_url = (
@@ -64,7 +64,7 @@ def download_oil_data():
 
     update_gitignore()
 
-    for year in range(1990, year):
+    for year in range(1990, current_year+1):
         url_parametrized = base_url.replace("YEAR", str(year))
         output_file = output_dir / f"oil_imports_{year}.csv"
 

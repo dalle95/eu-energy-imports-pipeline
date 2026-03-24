@@ -1,4 +1,5 @@
-with total as (
+with 
+total as (
     select  year,
             product_code,
             product_group,
@@ -24,12 +25,11 @@ russia as (
                 product_subgroup,
 )
 
-select
-    t.year,
-    t.product_code,
-    t.product_group,
-    t.product_subgroup,
-    ru_qty / total_qty as dependency_ratio
+select  t.year,
+        t.product_code,
+        t.product_group,
+        t.product_subgroup,
+        ru_qty / total_qty as dependency_ratio
 from total t
 join russia r using (year, product_code)
 order by 1

@@ -51,7 +51,7 @@ def download_gas_data():
     indicators = filters["indicators"]
     indicators_str = "+".join(indicators)
 
-    year = datetime.datetime.now().year
+    current_year = datetime.datetime.now().year
 
     update_gitignore()
 
@@ -66,7 +66,7 @@ def download_gas_data():
         output_dir = Path("data/raw/comext/facts/gas_imports")
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        for year in range(1990, year):
+        for year in range(1990, current_year+1):
             url_parametrized = base_url.replace("YEAR", str(year))
             output_file = output_dir / f"gas_{p}_imports_{year}.csv"
 
