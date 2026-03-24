@@ -9,7 +9,7 @@ total as (
     group by    year, 
                 product_code,
                 product_group,
-                product_subgroup,
+                product_subgroup
 ),
 russia as (
     select  year, 
@@ -22,7 +22,7 @@ russia as (
     group by    year, 
                 product_code,
                 product_group,
-                product_subgroup,
+                product_subgroup
 )
 
 select  t.year,

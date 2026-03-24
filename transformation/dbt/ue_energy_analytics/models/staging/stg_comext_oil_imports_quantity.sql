@@ -5,8 +5,8 @@ dataset_comext_oil_imports_quantity as (
     select  reporter,
             partner,
             product as product_code,
-            TIME_PERIOD as time_period,
-            cast(OBS_VALUE as decimal(38,2)) as quantity_100kg,
+            "TIME_PERIOD" as time_period,
+            cast("OBS_VALUE" as decimal(38,2)) as quantity_100kg,
             '100kg' as quantity_unit
     from {{ source('raw_energy', 'comext_oil_imports_quantity') }}
 

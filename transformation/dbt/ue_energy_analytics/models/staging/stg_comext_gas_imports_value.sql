@@ -5,8 +5,8 @@ dataset_comext_gas_imports_value as (
     select  reporter,
             partner,
             product as product_code,
-            TIME_PERIOD as time_period,
-            cast(OBS_VALUE as decimal(38,2)) as value_euros
+            "TIME_PERIOD" as time_period,
+            cast("OBS_VALUE" as decimal(38,2)) as value_euros
     from {{ source('raw_energy', 'comext_gas_imports_value') }}
 )
 

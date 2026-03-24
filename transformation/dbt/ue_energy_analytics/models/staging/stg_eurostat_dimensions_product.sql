@@ -3,7 +3,7 @@
 with
 dataset_eurostat_siec_dimensions as (
     select  *
-    from {{ source('raw_energy', 'eurostat_siec_dimensions') }}
+    from {{ source('raw_energy', 'eurostat_dimensions_siec') }}
 )
 
 select *

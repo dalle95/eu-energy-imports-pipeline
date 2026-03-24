@@ -1,12 +1,32 @@
 from pathlib import Path
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 
-def load_multiple_files_to_postgres(data_path: Path, extension: str, table_name: str):
-    print(f"Loading data into PostgreSQL table: {table_name}")
+DB_URL = "postgresql+psycopg://root:root@localhost:5432/ue_energy"
+RAW_SCHEMA = "raw"
 
-    engine = create_engine("postgresql+psycopg://root:root@localhost:5432/ue_energy")
+
+def get_engine():
+    return create_engine(DB_URL)
+
+
+def ensure_schema_exists(engine, schema_name: str):
+    with engine.begin() as conn:
+        conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"'))
+    print(f"Schema '{schema_name}' ready")
+
+
+def load_multiple_files_to_postgres(
+    data_path: Path,
+    extension: str,
+    table_name: str,
+    schema_name: str = RAW_SCHEMA
+):
+    print(f"Loading data into PostgreSQL table: {schema_name}.{table_name}")
+
+    engine = get_engine()
+    ensure_schema_exists(engine, schema_name)
 
     first_file = True
     files = list(data_path.glob(f"*.{extension}"))
@@ -28,15 +48,17 @@ def load_multiple_files_to_postgres(data_path: Path, extension: str, table_name:
         if first_file:
             df.head(0).to_sql(
                 name=table_name,
+                schema=schema_name,
                 con=engine,
                 if_exists="replace",
                 index=False
             )
-            print("Table created")
+            print(f"Table created: {schema_name}.{table_name}")
             first_file = False
 
         df.to_sql(
             name=table_name,
+            schema=schema_name,
             con=engine,
             if_exists="append",
             index=False,
@@ -44,12 +66,19 @@ def load_multiple_files_to_postgres(data_path: Path, extension: str, table_name:
             chunksize=10000
         )
 
-        print(f"Loaded {len(df)} rows into PostgreSQL table: {table_name}")
+        print(f"Loaded {len(df)} rows into PostgreSQL table: {schema_name}.{table_name}")
 
-def load_single_file_to_postgres(data_path: Path, extension: str, table_name: str):
-    print(f"Loading data into PostgreSQL table: {table_name}")
 
-    engine = create_engine("postgresql+psycopg://root:root@localhost:5432/ue_energy")
+def load_single_file_to_postgres(
+    data_path: Path,
+    extension: str,
+    table_name: str,
+    schema_name: str = RAW_SCHEMA
+):
+    print(f"Loading data into PostgreSQL table: {schema_name}.{table_name}")
+
+    engine = get_engine()
+    ensure_schema_exists(engine, schema_name)
 
     if not data_path.exists():
         print(f"File not found: {data_path}")
@@ -66,6 +95,7 @@ def load_single_file_to_postgres(data_path: Path, extension: str, table_name: st
 
     df.to_sql(
         name=table_name,
+        schema=schema_name,
         con=engine,
         if_exists="replace",
         index=False,
@@ -73,7 +103,8 @@ def load_single_file_to_postgres(data_path: Path, extension: str, table_name: st
         chunksize=10000
     )
 
-    print(f"Loaded {len(df)} rows into PostgreSQL table: {table_name}")
+    print(f"Loaded {len(df)} rows into PostgreSQL table: {schema_name}.{table_name}")
+
 
 def load_comext_oil_data():
     load_multiple_files_to_postgres(
@@ -88,6 +119,7 @@ def load_comext_oil_data():
         table_name="comext_oil_imports_value"
     )
 
+
 def load_comext_gas_data():
     load_multiple_files_to_postgres(
         data_path=Path("data/processed/comext/facts/gas_imports/quantity"),
@@ -100,6 +132,7 @@ def load_comext_gas_data():
         extension="parquet",
         table_name="comext_gas_imports_value"
     )
+
 
 def load_eurostat_dimensions_data():
     load_single_file_to_postgres(
