@@ -6,7 +6,6 @@ comext_imports_value as (
         reporter,
         partner,
         product_code,
-        'oil' as product,
         time_period,
         left(time_period, 4) as year,
         right(time_period, 2) as month,
@@ -20,7 +19,6 @@ comext_imports_value as (
         reporter,
         partner,
         product_code,
-        'gas' as product,
         time_period,
         left(time_period, 4) as year,
         right(time_period, 2) as month,
@@ -28,13 +26,13 @@ comext_imports_value as (
     from {{ ref('stg_comext_gas_imports_value') }}
 
 ),
-final as (
+dataset_with_product_detail as (
 
     select  
             civ.reporter as reporter_code,
             civ.partner as partner_code,
             civ.product_code,
-            civ.product,
+            {{ classify_product('civ.product_code') }},
             civ.time_period,
             civ.year,
             civ.month,
@@ -43,5 +41,13 @@ final as (
 
 )
 
-select *
-from final
+select reporter_code,
+       partner_code,
+       product_code,
+       product_group,
+       product_subgroup,
+       time_period,
+       year,
+       month,
+       value_euros
+from dataset_with_product_detail

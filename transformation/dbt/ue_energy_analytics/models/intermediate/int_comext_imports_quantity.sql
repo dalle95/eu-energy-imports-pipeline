@@ -5,7 +5,6 @@ comext_imports_quantity as (
         reporter,
         partner,
         product_code,
-        'oil' as product,
         time_period,
         left(time_period, 4) as year,
         right(time_period, 2) as month,
@@ -19,7 +18,6 @@ comext_imports_quantity as (
         reporter,
         partner,
         product_code,
-        'gas' as product,
         time_period,
         left(time_period, 4) as year,
         right(time_period, 2) as month,
@@ -33,25 +31,43 @@ unit_conversions as (
     {{ unit_conversions() }}
 
 ),
-final as (
+dataset_with_product_detail as (
 
     select
             ciq.reporter as reporter_code,
             ciq.partner as partner_code,
             ciq.product_code,
-            ciq.product,
+            {{ classify_product('ciq.product_code') }},
             ciq.time_period,
             ciq.year,
             ciq.month,
             ciq.quantity_100kg as native_quantity,
-            ciq.quantity_unit as native_unit,
-            ciq.quantity_100kg * uc.conversion_factor as quantity_mwh
+            ciq.quantity_unit as native_unit
+           
     from comext_imports_quantity ciq
-    left join unit_conversions uc   on ciq.product = uc.commodity
-                                    and ciq.quantity_unit = uc.from_unit
+    
+
+),
+dataset_with_conversion as (
+
+    select  *
+            ,dpd.native_quantity * uc.conversion_factor as quantity_mwh
+    from dataset_with_product_detail dpd
+    left join unit_conversions uc   on dpd.product_group = uc.commodity
+                                    and dpd.native_unit = uc.from_unit
                                     and uc.to_unit = 'mwh'
 
 )
 
-select *
-from final
+select  reporter_code,
+        partner_code,
+        product_code,
+        product_group,
+        product_subgroup,
+        time_period,
+        year,
+        month,
+        native_quantity,
+        native_unit,
+        quantity_mwh
+from dataset_with_conversion

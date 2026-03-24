@@ -5,7 +5,8 @@ energy_imports_value as (
         reporter_code,
         partner_code,
         product_code,
-        product,
+        product_group,
+        product_subgroup,
         time_period,
         year,
         month,
@@ -19,7 +20,8 @@ energy_imports_quantity as (
         reporter_code,
         partner_code,
         product_code,
-        product,
+        product_group,
+        product_subgroup,
         time_period,
         year,
         month,
@@ -45,7 +47,8 @@ energy_imports as (
         eiv.partner_code,
         p.label as partner_description,
         eiv.product_code,
-        eiv.product,
+        eiv.product_group,
+        eiv.product_subgroup,
         eiv.time_period,
         eiv.year,
         eiv.month,
@@ -67,3 +70,4 @@ energy_imports as (
 
 select *
 from energy_imports
+order by year, month, reporter_code, partner_code, product_code

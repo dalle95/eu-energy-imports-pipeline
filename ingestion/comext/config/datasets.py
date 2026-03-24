@@ -17,7 +17,7 @@ COMEXT_DATASETS = {
             "freq": "M",
             "reporter": "EU27_2020",
             "flow": "1",
-            "product": "2711",
+            "product": ["271111",'271121'],
             "indicators": ["VALUE_IN_EUROS", "QUANTITY_IN_100KG"],
         },
     },

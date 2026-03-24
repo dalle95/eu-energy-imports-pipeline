@@ -53,25 +53,30 @@ def download_gas_data():
 
     year = datetime.datetime.now().year
 
-    endpoint = "https://ec.europa.eu/eurostat/api/comext/dissemination/sdmx/2.1"
-    base_url = (
-        f"{endpoint}/data/{dataset_id}/{freq}.{reporter}..{product}.1.{indicators_str}"
-        "?startPeriod=YEAR-01&endPeriod=YEAR-12&format=SDMX-CSV"
-    )
-
-    output_dir = Path("data/raw/comext/facts/gas_imports")
-    output_dir.mkdir(parents=True, exist_ok=True)
-
     update_gitignore()
 
-    for year in range(1990, year):
-        url_parametrized = base_url.replace("YEAR", str(year))
-        output_file = output_dir / f"gas_imports_{year}.csv"
+    for p in product:
+       
+        endpoint = "https://ec.europa.eu/eurostat/api/comext/dissemination/sdmx/2.1"
+        base_url = (
+            f"{endpoint}/data/{dataset_id}/{freq}.{reporter}..{p}.1.{indicators_str}"
+            "?startPeriod=YEAR-01&endPeriod=YEAR-12&format=SDMX-CSV"
+        )
 
-        print(f"Downloading {year}...")
-        print(url_parametrized)
+        output_dir = Path("data/raw/comext/facts/gas_imports")
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-        download_file(url_parametrized, output_file)
+        for year in range(1990, year):
+            url_parametrized = base_url.replace("YEAR", str(year))
+            output_file = output_dir / f"gas_{p}_imports_{year}.csv"
 
-    print("Gas data download completed.")
+            print(f"Downloading {year}...")
+            print(url_parametrized)
+
+            download_file(url_parametrized, output_file)
+
+        print("Gas data download completed.")
+
+if __name__ == "__main__":
+    download_gas_data()
 

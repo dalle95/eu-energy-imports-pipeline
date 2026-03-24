@@ -1,5 +1,5 @@
 from ingestion.run_ingestion import run_ingestion as run_ingestion
-from processing.run_processing import run_processing as run_processing
+# from processing.run_processing import run_processing as run_processing
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
 
     print("Processing phase started")
 
-    run_processing()
+    # run_processing()
 
     print("Processing phase completed")
 
