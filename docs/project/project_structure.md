@@ -70,12 +70,12 @@ Applies business logic and prepares data for analytics.
 ```
 transformation/
 ├── dbt/
-├── loaders/
+├── engines/
 └── run_transformation.py
 ```
 
 - `run_transformation.py` is the entrypoint that loads data into PostgreSQL and transforms it using dbt
-- `loaders/` handles loading data into storage systems (e.g. PostgreSQL)
+- `engines/` handles loading data into storage systems (e.g. PostgreSQL)
 - `dbt/` contains transformation models (staging, marts)
 - Outputs data to the **curated layer**
 
@@ -89,12 +89,10 @@ Stores data across different pipeline stages.
 data/
 ├── raw/
 ├── processed/
-└── curated/
 ```
 
 - `raw/`: data from ingestion
 - `processed/`: data transformed by Spark
-- `curated/`: final data ready for analytics
 
 ---
 
@@ -107,6 +105,7 @@ docs/
 ├── ingestion/
 ├── processing/
 ├── transformation/
+├── project/
 └── ...
 ```
 

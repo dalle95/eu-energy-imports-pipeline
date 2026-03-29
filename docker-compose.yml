@@ -79,6 +79,18 @@ services:
     ports:
       - "8085:80"
 
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase-data
+    environment:
+      MB_DB_FILE: /metabase-data/metabase.db
+    depends_on:
+      - pgdatabase
+
 networks:
   spark-network:
     driver: bridge
@@ -86,3 +98,4 @@ networks:
 volumes:
   ue_energy_postgres_data:
   pgadmin_data:
+  metabase_data:

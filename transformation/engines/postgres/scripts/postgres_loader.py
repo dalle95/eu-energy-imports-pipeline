@@ -10,12 +10,15 @@ RAW_SCHEMA = "raw"
 def get_engine():
     return create_engine(DB_URL)
 
-
 def ensure_schema_exists(engine, schema_name: str):
     with engine.begin() as conn:
         conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"'))
     print(f"Schema '{schema_name}' ready")
 
+def drop_table_if_exists(engine, schema_name: str, table_name: str):
+    with engine.begin() as conn:
+        conn.execute(text(f'DROP TABLE IF EXISTS "{schema_name}"."{table_name}" CASCADE'))
+    print(f"Table '{schema_name}.{table_name}' dropped if it existed")
 
 def load_multiple_files_to_postgres(
     data_path: Path,
@@ -27,6 +30,8 @@ def load_multiple_files_to_postgres(
 
     engine = get_engine()
     ensure_schema_exists(engine, schema_name)
+
+    drop_table_if_exists(engine, schema_name, table_name)
 
     first_file = True
     files = list(data_path.glob(f"*.{extension}"))
@@ -79,6 +84,8 @@ def load_single_file_to_postgres(
 
     engine = get_engine()
     ensure_schema_exists(engine, schema_name)
+
+    drop_table_if_exists(engine, schema_name, table_name)
 
     if not data_path.exists():
         print(f"File not found: {data_path}")

@@ -20,27 +20,27 @@ as
 select *
 from read_parquet('__DATA_PATH__/processed/comext/facts/gas_imports/quantity/*.parquet');
 
-create or replace view raw.eurostat_freq_dimensions
+create or replace view raw.eurostat_dimensions_freq
 as
 select *
 from read_csv('__DATA_PATH__/processed/eurostat/dimensions/FREQ.csv');
 
-create or replace view raw.eurostat_unit_dimensions
+create or replace view raw.eurostat_dimensions_unit
 as
 select *
 from read_csv('__DATA_PATH__/processed/eurostat/dimensions/UNIT.csv');
 
-create or replace view raw.eurostat_geo_dimensions
+create or replace view raw.eurostat_dimensions_geo
 as
 select *
 from read_csv('__DATA_PATH__/processed/eurostat/dimensions/GEO.csv');
 
-create or replace view raw.eurostat_siec_dimensions
+create or replace view raw.eurostat_dimensions_siec
 as
 select *
 from read_csv('__DATA_PATH__/processed/eurostat/dimensions/SIEC.csv');
 
-create or replace view raw.eurostat_partner_dimensions
+create or replace view raw.eurostat_dimensions_partner
 as
 select *
 from read_csv('__DATA_PATH__/processed/eurostat/dimensions/PARTNER.csv');

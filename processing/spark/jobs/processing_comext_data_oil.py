@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from spark.jobs.processing_data import process_comext_data
+from processing_data import process_comext_data
 
 def process_comext_oil_data():
       

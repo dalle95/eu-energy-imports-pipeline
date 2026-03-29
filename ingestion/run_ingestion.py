@@ -1,4 +1,4 @@
-from ingestion.eurostat.config.download_dimensions import download_dimensions as download_dimensions
+from ingestion.eurostat.config.download_dimensions import download_dimensions
 
 from ingestion.eurostat.extract.download_oil_data import download_oil_data as download_oil_data_eurostat
 from ingestion.eurostat.extract.download_gas_data import download_gas_data as download_gas_data_eurostat
@@ -7,43 +7,35 @@ from ingestion.eurostat.extract.download_electricity_data import download_electr
 from ingestion.comext.extract.download_oil_data import download_oil_data as download_oil_data_comext
 from ingestion.comext.extract.download_gas_data import download_gas_data as download_gas_data_comext
 
+
 def run_ingestion():
+    print("Ingestion phase started")
 
     print("Starting Eurostat dimensions ingestion")
-
     download_dimensions()
-
-    print("Pipeline completed")
+    print("Eurostat dimensions ingestion completed")
 
     print("Starting Eurostat oil ingestion")
-
     download_oil_data_eurostat()
-
-    print("Pipeline completed")
+    print("Eurostat oil ingestion completed")
 
     print("Starting Eurostat gas ingestion")
-
     download_gas_data_eurostat()
-
-    print("Pipeline completed")
+    print("Eurostat gas ingestion completed")
 
     print("Starting Eurostat electricity ingestion")
-
     download_electricity_data_eurostat()
-
-    print("Pipeline completed")   
+    print("Eurostat electricity ingestion completed")
 
     print("Starting Comext oil ingestion")
-
     download_oil_data_comext()
-
-    print("Pipeline completed")
+    print("Comext oil ingestion completed")
 
     print("Starting Comext gas ingestion")
-
     download_gas_data_comext()
+    print("Comext gas ingestion completed")
 
-    print("Pipeline completed")
+    print("Ingestion phase completed")
 
 
 if __name__ == "__main__":
