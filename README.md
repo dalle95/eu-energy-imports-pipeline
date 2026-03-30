@@ -2,220 +2,184 @@
 
 ## Project Overview
 
-This project builds an end-to-end **data engineering pipeline** to
-analyze **European Union energy imports**, focusing on three key
-commodities:
+This project builds an end-to-end **data engineering pipeline** to analyze **European Union energy imports**, focusing on:
 
--   Natural Gas
--   Oil
--   Electricity
+* Natural Gas
+* Oil
 
-The goal is to analyze how the European energy supply changed **before
-and after sanctions against Russia**, examining:
+The main objective is to understand how the EU energy supply changed **before and after the sanctions against the Russian Federation**, analyzing:
 
--   Import volumes
--   Import costs
--   Supplier countries
--   Energy dependency shifts over time
+* import volumes
+* import costs
+* supplier countries
+* dependency shifts
 
-The project integrates **official European data sources** and builds a
-unified analytical platform for exploring supply dynamics and
-geopolitical impacts on EU energy markets.
+---
 
-The first version of the project is designed as a **local data
-platform**, built to demonstrate a complete data engineering workflow
-including ingestion, orchestration, transformation, modeling and
-visualization.
+## Key Insight
 
-A future iteration may migrate the architecture to a **cloud-based
-stack**.
+The analysis shows that:
 
-------------------------------------------------------------------------
+* EU dependency on Russian energy **dropped dramatically after 2022**
+* Total import volumes remained relatively stable
+* The main impact of sanctions was a **price shock**, especially in gas markets
+* The EU rapidly **restructured its supplier network** (US, Norway, LNG)
 
-# Analytical Goals
+---
 
-The project aims to answer questions such as:
+## Dashboard Preview
 
--   How did EU imports of gas, oil and electricity change after
-    sanctions against Russia?
--   Which countries replaced Russia as major energy suppliers?
--   How did import costs evolve before and after sanctions?
--   Which energy commodities showed the largest dependency shifts?
--   How do trade statistics compare with physical energy flows?
+Below is an example of the final analytical dashboard built in Metabase:
 
-------------------------------------------------------------------------
+![Dashboard Preview](/docs/dashboard/metabase/images/dashboard_overview.png)
 
-# Data Sources
+> The dashboard is structured to compare **pre- and post-sanctions periods**, allowing clear visualization of structural changes in the EU energy market.
 
-The pipeline integrates multiple official European data sources:
+---
 
--   **Eurostat** -- trade and energy statistics
--   **ENTSOG Transparency Platform** -- gas network flows
--   **ENTSO-E Transparency Platform** -- electricity flows and prices
--   **EU Sanctions Timeline / EUR-Lex** -- regulatory events and
-    sanctions timeline
+## Dashboard Analysis
 
-Combining these sources allows the project to compare **trade
-statistics, physical energy flows and geopolitical events**.
+The dashboard answers key analytical questions:
 
-------------------------------------------------------------------------
+1. How have EU imports evolved over time?
+2. How significant was Russia compared to other suppliers?
+3. How did the supplier mix change after sanctions?
+4. How did prices and volumes evolve?
+5. LNG vs pipeline: how did gas supply change?
 
-# Architecture
+Each question is supported by a dedicated visualization.
 
-Pipeline overview:
+Full dashboard explanation:
+-> `docs/dashboard/metabase/dashboard_setup.md`
 
-Data Sources\
-↓\
-Kestra Orchestration\
-↓\
-Python Data Ingestion\
-↓\
-Raw Data Lake (CSV files)\
-↓\
-Spark Processing Layer\
-↓\
-Curated Data Lake (Parquet)\
-↓\
-PostgreSQL Data Warehouse\
-↓\
-dbt Transformations (Star Schema)\
-↓\
-Metabase Dashboards
+---
 
-------------------------------------------------------------------------
+## Data Sources
 
-# Orchestration
+This project integrates multiple **official and authoritative data sources** to ensure analytical accuracy :
 
-**Kestra** is used as the workflow orchestrator.
+### Core Sources
 
-Kestra coordinates the execution of:
+* **Eurostat (Comext / ITGS)**
 
--   Data ingestion tasks
--   Spark processing jobs
--   Data warehouse loading
--   dbt transformations
+  * EU imports by partner and product
+  * value and quantity data
+  * main source for cost analysis
 
-This enables reproducible and automated pipeline execution.
+* **Eurostat Energy Statistics (nrg datasets)**
 
-------------------------------------------------------------------------
+  * energy-specific trade datasets
+  * harmonized classifications
 
-# Data Ingestion
+---
 
-Python scripts extract datasets from official sources and store them in
-a **local raw data lake**.
+## Architecture
 
-The ingestion layer is responsible for:
+The pipeline follows a modern data engineering architecture:
 
--   API interaction
--   dataset download
--   schema inspection
--   metadata logging
+```
+Data Sources
+    ↓
+Kestra Orchestration
+    ↓
+Python Ingestion
+    ↓
+Raw Data Lake (CSV/XML)
+    ↓
+Spark Processing
+    ↓
+Processed Data (Parquet)
+    ↓
+PostgreSQL Data Warehouse
+    ↓
+dbt Transformation (Star Schema)
+    ↓
+Metabase Dashboard
+```
 
-------------------------------------------------------------------------
+---
 
-# Processing Layer
+## Technology Stack
 
-**Spark / PySpark** is used to standardize heterogeneous datasets and
-convert raw files into **Parquet format**.
+| Layer            | Technology      |
+| ---------------- | --------------- |
+| Orchestration    | Kestra          |
+| Ingestion        | Python          |
+| Processing       | Spark / PySpark |
+| Storage          | Local Data Lake |
+| Warehouse        | PostgreSQL      |
+| Transformation   | dbt             |
+| Visualization    | Metabase        |
+| Containerization | Docker          |
 
-Typical processing tasks include:
+---
 
--   schema harmonization
--   unit normalization
--   timestamp formatting
--   raw dataset standardization
+## Project Structure
 
-------------------------------------------------------------------------
+The project is organized to separate responsibilities across pipeline layers :
 
-# Data Warehouse
+```
+data/
+docs/
+ingestion/
+processing/
+transformation/
+orchestration/
+```
 
-A **PostgreSQL** database acts as the analytical warehouse.
+---
 
-Curated datasets are loaded into PostgreSQL to enable efficient querying
-and modeling.
+## Dashboard Setup
 
-------------------------------------------------------------------------
+The Metabase dashboard is fully reproducible.
 
-# Data Transformation
+### Setup
 
-Transformations are managed using **dbt**.
+-> `docs/dashboard/metabase/setup.md`
 
-The transformation layers follow the common dbt convention:
+### Dashboard Logic
 
--   **staging** -- source cleanup and renaming
--   **intermediate** -- business logic and harmonization
--   **marts** -- reporting-ready datasets
+-> `docs/dashboard/metabase/dashboard_setup.md`
 
-The final reporting layer follows a **star schema**.
+---
 
-------------------------------------------------------------------------
+## How to Run
 
-# Data Visualization
+Start the full environment:
 
-**Metabase** is used for:
+```bash
+docker compose up -d
+```
 
--   dashboard creation
--   exploratory analysis
--   reporting
+Then access:
 
-Dashboards will highlight:
+👉 http://localhost:3000
 
--   energy imports over time
--   supplier country shifts
--   price and cost evolution
--   pre- and post-sanctions comparisons
+---
 
-------------------------------------------------------------------------
+## Key Design Principles
 
-# Technology Stack
+* Separation of ingestion, processing and transformation
+* dbt models independent from execution engine (DuckDB → PostgreSQL)
+* Reproducible local environment with Docker
+* BI layer fully documented
 
-  Layer                    Technology
-  ------------------------ -------------------------
-  Workflow orchestration   Kestra
-  Data ingestion           Python
-  Processing               Spark / PySpark
-  Data lake                Local storage
-  Data warehouse           PostgreSQL
-  Data transformation      dbt
-  Visualization            Metabase
-  Containerization         Docker / Docker Compose
+---
 
-------------------------------------------------------------------------
+## Future Improvements
 
-# Repository Structure
+* Cloud migration (GCP / BigQuery)
 
-See the `docs/` folder for architecture and technology documentation.
+---
 
-The repository is structured to clearly separate:
+## Documentation
 
--   ingestion
--   processing
--   storage
--   warehouse
--   transformation
--   visualization
+Additional documentation:
 
-------------------------------------------------------------------------
+* General → `docs/project/`
+* Ingestion layer → `docs/ingestion/`
+* Processing layer → `docs/processing/`
+* Transformation layer → `docs/transformation/`
+* Dashboard → `docs/dashboard/`
 
-# Future Cloud Architecture
-
-A future iteration of this project may migrate to a cloud architecture.
-
-Possible stack:
-
--   Google Cloud Storage -- data lake
--   BigQuery -- data warehouse
--   dbt Core -- transformations
--   Looker -- visualization
--   Airflow or Kestra -- orchestration
-
-------------------------------------------------------------------------
-
-# Documentation
-
-Additional documentation is available in the `docs/` directory,
-including:
-
--   architecture decisions
--   data sources description
--   technology documentation
+---
