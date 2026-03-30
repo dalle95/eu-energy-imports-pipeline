@@ -46,14 +46,13 @@ Ingestion → Processing → Transformation → Dashboard
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 project-root/
 
 ├── ingestion/
 ├── processing/
 ├── transformation/
-├── dashboard/
 ├── data/
 ├── docs/
 ├── main.py

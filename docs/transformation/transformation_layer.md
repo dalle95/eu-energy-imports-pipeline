@@ -1,4 +1,4 @@
-# 🔄 Data Transformation Layer with dbt
+# Data Transformation Layer with dbt
 
 This document describes the full **transformation process** implemented in this project using **dbt**.
 

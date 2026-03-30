@@ -1,4 +1,4 @@
-# 📁 Project Structure
+# Project Structure
 
 This document describes the **high-level folder structure** of the project.
 
@@ -7,12 +7,11 @@ While internal files may evolve, this structure should remain stable.
 
 ---
 
-## 🗂️ Overview
+## Overview
 
 ```
 project-root/
 
-├── dashboard/
 ├── data/
 ├── docs/
 ├── orchestration/
@@ -103,6 +102,7 @@ Project documentation.
 ```
 docs/
 ├── ingestion/
+├── dashboard/
 ├── processing/
 ├── transformation/
 ├── project/
