@@ -1,7 +1,27 @@
-# Data directory
-data/
-.venv/
-.ipynb_checkpoints/
+# Python cache
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local data
+data/
+
+# dbt / logs
 logs/
+target/
+dbt_packages/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

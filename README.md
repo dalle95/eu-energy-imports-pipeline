@@ -129,6 +129,25 @@ orchestration/
 
 ---
 
+## Single Entrypoint
+
+The project uses a single entrypoint:
+
+```bash
+python main.py
+```
+
+Available commands:
+
+```bash
+python main.py ingestion
+python main.py processing
+python main.py transformation
+python main.py all
+```
+
+---
+
 ## Dashboard Setup
 
 The Metabase dashboard is fully reproducible.
@@ -148,12 +167,39 @@ The Metabase dashboard is fully reproducible.
 Start the full environment:
 
 ```bash
-docker compose up -d
+git clone https://github.com/dalle95/eu-energy-imports-pipeline.git
+cd eu-energy-imports-pipeline
+
+docker compose up -d --build
+python main.py all
 ```
 
 Then access:
 
-👉 http://localhost:3000
+-> http://localhost:3000
+
+---
+
+## Pipeline Phases
+
+### Ingestion
+
+* Extract data from APIs
+* Store in `data/raw/`
+
+### Processing
+
+* Spark transformations
+* Output in `data/processed/`
+
+### Transformation
+
+* Load into PostgreSQL
+* Run dbt models
+
+### Dashboard
+
+* Metabase visualization layer
 
 ---
 
