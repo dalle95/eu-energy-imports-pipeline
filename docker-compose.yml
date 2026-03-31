@@ -16,7 +16,7 @@ services:
       - ./data:/data
       - ./processing/spark:/processing/spark
     networks:
-      - spark-network
+      - project-network
 
   spark-worker:
     image: apache/spark:4.1.1-python3
@@ -36,7 +36,7 @@ services:
       - ./data:/data
       - ./processing/spark:/processing/spark
     networks:
-      - spark-network
+      - project-network
 
   spark-client:
     build:
@@ -56,7 +56,7 @@ services:
       - ./processing/spark:/processing/spark
     working_dir: /home/spark/work/notebooks
     networks:
-      - spark-network
+      - project-network
 
   pgdatabase:
     image: postgres:18
@@ -68,6 +68,8 @@ services:
       - "ue_energy_postgres_data:/var/lib/postgresql"
     ports:
       - "5432:5432"
+    networks:
+      - project-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -78,6 +80,8 @@ services:
       - "pgadmin_data:/var/lib/pgadmin"
     ports:
       - "8085:80"
+    networks:
+      - project-network
 
   metabase:
     image: metabase/metabase:latest
@@ -90,12 +94,47 @@ services:
       MB_DB_FILE: /metabase-data/metabase.db
     depends_on:
       - pgdatabase
+    networks:
+      - project-network
+
+  kestra:
+    image: kestra/kestra:latest
+    container_name: kestra
+    user: "root"
+    ports:
+      - "8081:8080"
+    command: server standalone
+    environment:
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://pgdatabase:5432/ue_energy
+            driverClassName: org.postgresql.Driver
+            username: root
+            password: root
+        kestra:
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+    volumes:
+      - kestra_data:/app/storage
+      - ./:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    depends_on:
+      - pgdatabase
+    networks:
+      - project-network
 
 networks:
-  spark-network:
+  project-network:
     driver: bridge
 
 volumes:
   ue_energy_postgres_data:
   pgadmin_data:
   metabase_data:
+  kestra_data:
