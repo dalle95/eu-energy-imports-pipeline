@@ -16,6 +16,34 @@ The main objective is to understand how the EU energy supply changed **before an
 
 ---
 
+## Data Sources
+
+This project integrates multiple **official and authoritative data sources** to ensure analytical accuracy :
+
+### Core Sources
+
+- **Eurostat Comext (ITGS)**  
+  Main fact dataset used for the analysis:
+  - import value (EUR)
+  - import quantity
+  - partner country
+  - product classification
+
+- **Eurostat Dimensions**
+  Used to enrich and standardize:
+  - partner codes
+  - product classifications
+  - metadata
+
+The project intentionally focuses on Comext as the core dataset because:
+
+- it provides both **value and quantity**, enabling price analysis
+- it ensures **consistency across time and partners**
+- it avoids complex reconciliation between heterogeneous sources
+- it is sufficient to answer the main analytical questions
+
+---
+
 ## Key Insight
 
 The analysis shows that:
@@ -51,25 +79,6 @@ Each question is supported by a dedicated visualization.
 
 Full dashboard explanation:
 -> `docs/dashboard/metabase/dashboard_setup.md`
-
----
-
-## Data Sources
-
-This project integrates multiple **official and authoritative data sources** to ensure analytical accuracy :
-
-### Core Sources
-
-* **Eurostat (Comext / ITGS)**
-
-  * EU imports by partner and product
-  * value and quantity data
-  * main source for cost analysis
-
-* **Eurostat Energy Statistics (nrg datasets)**
-
-  * energy-specific trade datasets
-  * harmonized classifications
 
 ---
 
@@ -212,12 +221,6 @@ Then access:
 
 ---
 
-## Future Improvements
-
-* Cloud migration (GCP / BigQuery)
-
----
-
 ## Documentation
 
 Additional documentation:
@@ -227,5 +230,11 @@ Additional documentation:
 * Processing layer → `docs/processing/`
 * Transformation layer → `docs/transformation/`
 * Dashboard → `docs/dashboard/`
+
+---
+
+## Future Improvements
+
+* Cloud migration (GCP / BigQuery)
 
 ---
