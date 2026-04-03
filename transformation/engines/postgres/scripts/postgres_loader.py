@@ -1,9 +1,16 @@
+import os
 from pathlib import Path
 import pandas as pd
 from sqlalchemy import create_engine, text
 
+db_host = os.getenv("POSTGRES_HOST", "localhost")
+db_port = os.getenv("POSTGRES_PORT", "5432")
+db_user = os.getenv("POSTGRES_USER", "root")
+db_password = os.getenv("POSTGRES_PASSWORD", "root")
+db_name = os.getenv("POSTGRES_DB", "ue_energy")
 
-DB_URL = "postgresql+psycopg://root:root@localhost:5432/ue_energy"
+DB_URL = f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
 RAW_SCHEMA = "raw"
 
 

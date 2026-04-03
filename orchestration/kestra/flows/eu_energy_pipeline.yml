@@ -1,0 +1,39 @@
+id: eu_energy_pipeline
+namespace: eu.energy
+
+description: |
+  End-to-end orchestration of the EU Energy Imports Pipeline.
+  Runs ingestion -> processing -> transformation.
+
+tasks:
+  - id: run_ingestion
+    type: io.kestra.plugin.scripts.shell.Commands
+    containerImage: eu-energy-pipeline-runner:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+    commands:
+      - cd /app
+      - python main.py --phase ingestion --env prod
+
+  - id: run_processing
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - docker exec -i spark-client /opt/spark/bin/spark-submit --master spark://spark-master:7077 /processing/spark/jobs/run_processing_job.py
+
+  - id: run_transformation
+    type: io.kestra.plugin.scripts.shell.Commands
+    containerImage: eu-energy-pipeline-runner:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: eu-energy-imports-pipeline_project-network
+    env:
+      POSTGRES_HOST: pgdatabase
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ue_energy
+    commands:
+      - cd /app
+      - python main.py --phase transformation --env prod

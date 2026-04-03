@@ -39,6 +39,7 @@ services:
       - project-network
 
   spark-client:
+    image: eu-energy-spark-client:latest
     build:
       context: .
       dockerfile: processing/spark/Dockerfile.spark-client
@@ -98,34 +99,43 @@ services:
       - project-network
 
   kestra:
-    image: kestra/kestra:latest
+    build:
+      context: .
+      dockerfile: orchestration/kestra/Dockerfile.kestra
     container_name: kestra
     user: "root"
     ports:
       - "8081:8080"
-    command: server standalone
-    environment:
-      KESTRA_CONFIGURATION: |
-        datasources:
-          postgres:
-            url: jdbc:postgresql://pgdatabase:5432/ue_energy
-            driverClassName: org.postgresql.Driver
-            username: root
-            password: root
-        kestra:
-          repository:
-            type: postgres
-          storage:
-            type: local
-            local:
-              base-path: /app/storage
+    command:
+      - server
+      - standalone
+      - --config
+      - /etc/config/application.yml
     volumes:
-      - kestra_data:/app/storage
-      - ./:/app
+      - ./orchestration/kestra/config/application.yml:/etc/config/application.yml
+      - ./orchestration/kestra/flows:/app/flows
+      - ./orchestration/kestra/storage:/app/storage
+      - ./:/app/project
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
     depends_on:
       - pgdatabase
+    networks:
+      - project-network
+
+  pipeline-runner:
+    image: eu-energy-pipeline-runner:latest
+    build:
+      context: .
+      dockerfile: orchestration/kestra/Dockerfile.runner
+    container_name: pipeline-runner
+    hostname: pipeline-runner
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - pgdatabase
+      - spark-master
     networks:
       - project-network
 

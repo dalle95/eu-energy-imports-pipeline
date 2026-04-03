@@ -1,0 +1,16 @@
+datasources:
+  postgres:
+    url: jdbc:postgresql://pgdatabase:5432/ue_energy
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: root
+
+kestra:
+  repository:
+    type: postgres
+  queue:
+    type: postgres
+  storage:
+    type: local
+    local:
+      base-path: /app/storage
