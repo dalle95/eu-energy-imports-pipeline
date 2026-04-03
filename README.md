@@ -210,6 +210,9 @@ Then access:
 
 * Metabase visualization layer
 
+### Orchestration
+* Organize ingestion, processing, and transformation phases within a controlled environment
+
 ---
 
 ## Key Design Principles
@@ -230,6 +233,7 @@ Additional documentation:
 * Processing layer → `docs/processing/`
 * Transformation layer → `docs/transformation/`
 * Dashboard → `docs/dashboard/`
+* Orchestration layer → `docs/orchestration/`
 
 ---
 
